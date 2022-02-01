@@ -39,11 +39,11 @@ void ledToggleCb(const std_msgs::UInt8& state_msg){
   unsigned char data = state_msg.data;
 
   for(int i = 0; i < NUMBER_OF_LED; i++){
-    pin_data = data & 0x01;
+    pin_data = data & 0x01 ? true : false;
     if(pin_data){
-      digitalWrite(led_pin, HIGH-digitalRead(i));   // blink the led
+      digitalWrite(led_pin[i], HIGH-digitalRead(led_pin[i]));   // blink the led
     }
-    pin_data = pin_data >> 1;
+    data = data >> 1;
   }
 }
 
@@ -52,9 +52,9 @@ void ledStateCb(const std_msgs::UInt8& state_msg){
   unsigned char data = state_msg.data;
 
   for(int i = 0; i < NUMBER_OF_LED; i++){
-    pin_data = data & 0x01 ? true : false;
+    pin_data = data & 0x01 ? false : true;
     digitalWrite(led_pin[i], pin_data);
-    pin_data = pin_data >> 1;
+    data = data >> 1;
   }
 }
 
@@ -107,6 +107,7 @@ void setup()
 
   for(int i = 0; i < NUMBER_OF_LED; i++){
     pinMode(led_pin[i], OUTPUT);
+    digitalWrite(led_pin[i], HIGH);
   }
 
   for(int i = 0; i < NUMBER_OF_ADC; i++){
